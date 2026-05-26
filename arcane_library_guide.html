@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arcane Library — Book Reference Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#c8973a;--gold-light:#e8bc6a;--gold-dim:#8a6020;
+  --ink:#1a1410;--parchment:#faf6ee;--parchment-dark:#f0e8d4;
+  --border:rgba(200,151,58,0.3);--border-strong:rgba(200,151,58,0.6);
+  --radius:6px;
+}
+body{font-family:'Crimson Pro',Georgia,serif;background:#0d0a08;color:var(--ink);min-height:100vh;background-image:radial-gradient(ellipse at 20% 0%,#2a1a08 0%,transparent 60%),radial-gradient(ellipse at 80% 100%,#1a0a20 0%,transparent 60%)}
+header{background:linear-gradient(180deg,#0d0a06 0%,#1a1208 100%);border-bottom:1px solid var(--border-strong);padding:1.5rem 2rem 1.2rem;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 4px 24px rgba(0,0,0,0.5)}
+.hd-ornament{color:var(--gold-dim);font-size:0.72rem;letter-spacing:0.3em;text-transform:uppercase;margin-bottom:0.4rem;font-style:italic}
+h1{font-family:'Cinzel',serif;font-size:clamp(1.2rem,2.8vw,1.9rem);font-weight:700;color:var(--gold);letter-spacing:0.06em;line-height:1.2}
+h1 span{display:block;font-size:0.52em;font-weight:400;color:var(--gold-dim);letter-spacing:0.12em;margin-top:0.2em}
+.hd-stats{display:flex;justify-content:center;gap:1.8rem;margin-top:0.9rem;flex-wrap:wrap}
+.stat-num{font-family:'Cinzel',serif;font-size:1.35rem;color:var(--gold);font-weight:600;line-height:1}
+.stat-label{font-size:0.68rem;color:var(--gold-dim);letter-spacing:0.08em;text-transform:uppercase;font-style:italic}
+.controls{background:#100c06;border-bottom:1px solid var(--border);padding:0.8rem 1.2rem;display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center}
+.sw{position:relative;flex:1;min-width:200px}
+.si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--gold-dim);pointer-events:none;font-size:0.95rem}
+input[type=text],select{background:#1c1308;border:1px solid var(--border-strong);color:var(--gold-light);font-family:'Crimson Pro',serif;font-size:0.95rem;padding:0.5rem 0.7rem 0.5rem 2rem;border-radius:var(--radius);width:100%;outline:none;transition:border-color 0.2s}
+input[type=text]::placeholder{color:var(--gold-dim);opacity:0.7}
+input[type=text]:focus,select:focus{border-color:var(--gold)}
+select{padding-left:0.7rem;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238a6020' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:1.8rem;min-width:160px}
+select option{background:#1c1308}
+.btn-grp{display:flex;gap:3px}
+.btn{background:#1c1308;border:1px solid var(--border);color:var(--gold-dim);font-family:'Cinzel',serif;font-size:0.68rem;padding:0.42rem 0.7rem;border-radius:var(--radius);cursor:pointer;transition:all 0.15s;white-space:nowrap;letter-spacing:0.04em}
+.btn:hover{border-color:var(--gold);color:var(--gold)}
+.btn.active{background:var(--gold-dim);border-color:var(--gold);color:#ffe8a0}
+.rinfo{font-style:italic;color:var(--gold-dim);font-size:0.85rem;padding:0.4rem 1.2rem;background:#100c06;border-bottom:1px solid rgba(200,151,58,0.1)}
+main{max-width:1200px;margin:0 auto;padding:1.2rem}
+.floor-div{display:flex;align-items:center;gap:0.8rem;margin:1.2rem 0 0.8rem}
+.floor-div::before,.floor-div::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--border-strong),transparent)}
+.floor-txt{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.18em;color:var(--gold-dim);text-transform:uppercase;white-space:nowrap;padding:0.18rem 0.8rem;border:1px solid var(--border);border-radius:999px;background:#100c06}
+.book-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:0.85rem}
+.cat-card{background:linear-gradient(145deg,#1c1308 0%,#160f07 100%);border:1px solid var(--border);border-radius:8px;overflow:hidden;transition:border-color 0.2s}
+.cat-card:hover{border-color:var(--border-strong)}
+.cat-card.hidden{display:none}
+.cat-hdr{padding:0.75rem 0.9rem;display:flex;align-items:center;gap:0.65rem;cursor:pointer;border-bottom:1px solid var(--border);background:var(--cat-bg,rgba(200,151,58,0.04));user-select:none}
+.cat-hdr:hover{filter:brightness(1.08)}
+.cat-id{font-family:'Cinzel',serif;font-size:0.75rem;font-weight:700;padding:0.18rem 0.45rem;border-radius:4px;min-width:34px;text-align:center;flex-shrink:0;background:var(--cat-bg);color:var(--cat-clr);border:1px solid var(--cat-clr);opacity:0.9}
+.cat-info{flex:1;min-width:0}
+.cat-name{font-family:'Cinzel',serif;font-size:0.84rem;font-weight:600;color:var(--cat-clr);line-height:1.2}
+.cat-sub{font-size:0.74rem;font-style:italic;margin-top:1px;color:var(--cat-clr);opacity:0.65}
+.cat-meta{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.cat-cnt{font-family:'Cinzel',serif;font-size:0.68rem;color:var(--gold-dim)}
+.tog{font-size:0.85rem;color:var(--gold-dim);transition:transform 0.2s}
+.cat-card.collapsed .tog{transform:rotate(-90deg)}
+.book-list{padding:0.2rem 0}
+.cat-card.collapsed .book-list{display:none}
+.brow{display:flex;align-items:flex-start;padding:0.4rem 0.9rem 0.4rem 1.1rem;gap:0.65rem;border-bottom:1px solid rgba(200,151,58,0.07);transition:background 0.1s}
+.brow:last-child{border-bottom:none}
+.brow:hover{background:rgba(200,151,58,0.04)}
+.brow.hl{background:rgba(200,151,58,0.1)}
+.btitle{flex:1;font-size:0.85rem;color:#e8dcc8;line-height:1.35;font-weight:300}
+.btitle mark{background:rgba(200,151,58,0.3);color:var(--gold-light);border-radius:2px;padding:0 1px}
+.vtag{font-family:'Cinzel',serif;font-size:0.62rem;padding:1px 5px;border-radius:3px;border:1px solid;white-space:nowrap;flex-shrink:0;margin-top:1px}
+.v10{color:#c0a060;border-color:rgba(192,160,96,0.4);background:rgba(192,160,96,0.07)}
+.v5{color:#90b0d0;border-color:rgba(144,176,208,0.4);background:rgba(144,176,208,0.07)}
+.v3{color:#a090c0;border-color:rgba(160,144,192,0.4);background:rgba(160,144,192,0.07)}
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--gold-dim);font-style:italic;font-size:1rem;grid-column:1/-1}
+footer{text-align:center;padding:1.5rem;color:var(--gold-dim);font-style:italic;font-size:0.78rem;border-top:1px solid var(--border);margin-top:1.5rem;opacity:0.55}
+/* themes */
+.tm-monster{--cat-clr:#c87828;--cat-bg:rgba(200,120,40,0.12)}
+.tm-astro{--cat-clr:#4090d0;--cat-bg:rgba(64,144,208,0.12)}
+.tm-curse{--cat-clr:#c04040;--cat-bg:rgba(192,64,64,0.12)}
+.tm-bard{--cat-clr:#90a820;--cat-bg:rgba(144,168,32,0.12)}
+.tm-necro{--cat-clr:#9060c0;--cat-bg:rgba(144,96,192,0.12)}
+.tm-transf{--cat-clr:#c05030;--cat-bg:rgba(192,80,48,0.12)}
+.tm-artifact{--cat-clr:#b060d0;--cat-bg:rgba(176,96,208,0.12)}
+.tm-stealth{--cat-clr:#607080;--cat-bg:rgba(96,112,128,0.12)}
+.tm-illusion{--cat-clr:#8050c0;--cat-bg:rgba(128,80,192,0.12)}
+.tm-summon{--cat-clr:#30a0b0;--cat-bg:rgba(48,160,176,0.12)}
+.tm-heal{--cat-clr:#c04060;--cat-bg:rgba(192,64,96,0.12)}
+.tm-holy{--cat-clr:#d0a820;--cat-bg:rgba(208,168,32,0.12)}
+.tm-destruct{--cat-clr:#d06020;--cat-bg:rgba(208,96,32,0.12)}
+.tm-alchemy{--cat-clr:#40a850;--cat-bg:rgba(64,168,80,0.12)}
+.tm-warrior{--cat-clr:#b07830;--cat-bg:rgba(176,120,48,0.12)}
+.tm-archery{--cat-clr:#509040;--cat-bg:rgba(80,144,64,0.12)}
+.tm-daily{--cat-clr:#c080a0;--cat-bg:rgba(192,128,160,0.12)}
+.tm-math{--cat-clr:#5080c0;--cat-bg:rgba(80,128,192,0.12)}
+.tm-art{--cat-clr:#c0608a;--cat-bg:rgba(192,96,138,0.12)}
+.tm-manage{--cat-clr:#3870a0;--cat-bg:rgba(56,112,160,0.12)}
+.tm-econ{--cat-clr:#40a060;--cat-bg:rgba(64,160,96,0.12)}
+.tm-socio{--cat-clr:#a07840;--cat-bg:rgba(160,120,64,0.12)}
+.tm-psych{--cat-clr:#b05040;--cat-bg:rgba(176,80,64,0.12)}
+.tm-philo{--cat-clr:#c0a030;--cat-bg:rgba(192,160,48,0.12)}
+.tm-law{--cat-clr:#487840;--cat-bg:rgba(72,120,64,0.12)}
+.tm-romance{--cat-clr:#c060a0;--cat-bg:rgba(192,96,160,0.12)}
+.tm-mystery{--cat-clr:#6080a0;--cat-bg:rgba(96,128,160,0.12)}
+.tm-history{--cat-clr:#907030;--cat-bg:rgba(144,112,48,0.12)}
+.tm-travel{--cat-clr:#a07840;--cat-bg:rgba(160,120,64,0.12)}
+.tm-dungeon{--cat-clr:#9040b0;--cat-bg:rgba(144,64,176,0.12)}
+.tm-lang{--cat-clr:#c04820;--cat-bg:rgba(192,72,32,0.12)}
+@media(max-width:580px){.book-grid{grid-template-columns:1fr}h1{font-size:1.1rem}.controls{padding:0.6rem 0.8rem}main{padding:0.8rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd-ornament">✦ Librarian: Tidy Up the Arcane Library! ✦</div>
+  <h1>Arcane Library Book Reference<span>คู่มือจัดหมวดหมู่ — ข้อมูลครบ 100% ทั้ง 2 ชั้น</span></h1>
+  <div class="hd-stats">
+    <div class="stat"><div class="stat-num" id="sn">400</div><div class="stat-label">ชื่อหนังสือ</div></div>
+    <div class="stat"><div class="stat-num">31</div><div class="stat-label">หมวดหมู่</div></div>
+    <div class="stat"><div class="stat-num">3,072</div><div class="stat-label">เล่มทั้งหมด</div></div>
+    <div class="stat"><div class="stat-num">2</div><div class="stat-label">ชั้น</div></div>
+  </div>
+</header>
+<div class="controls">
+  <div class="sw">
+    <span class="si">🔍</span>
+    <input type="text" id="q" placeholder="ค้นหาชื่อหนังสือ..." oninput="go()" autocomplete="off" spellcheck="false">
+  </div>
+  <select id="fl" onchange="go()">
+    <option value="all">ทุกชั้น</option>
+    <option value="1">ชั้น 1 — เวทย์มนต์</option>
+    <option value="2">ชั้น 2 — วิชาทั่วไป</option>
+  </select>
+  <select id="cf" onchange="go()">
+    <option value="all">ทุกหมวด</option>
+  </select>
+  <select id="sf" onchange="go()">
+    <option value="sec">เรียง Section</option>
+    <option value="az">เรียง A–Z</option>
+    <option value="cnt">เรียงจำนวน</option>
+  </select>
+  <div class="btn-grp">
+    <button class="btn active" id="bex" onclick="expandAll()">ขยายทั้งหมด</button>
+    <button class="btn" id="bcl" onclick="collapseAll()">ย่อทั้งหมด</button>
+  </div>
+</div>
+<div class="rinfo" id="ri">แสดงทุกหมวด — 400 ชื่อหนังสือ</div>
+<main id="mc"></main>
+<footer>ข้อมูลจาก Steam Guide (Flubbels), KeenGamer & GameRant · Librarian: Tidy Up the Arcane Library! (ArtRising, April 2026)<br>ครบ 400 ชื่อเรื่อง 31 หมวด 3,072 เล่ม — ตรวจสอบจากผู้เล่นในเกมจริง</footer>
+<script>
+const D=[
+{s:"1A",n:"Monsterology",f:1,tm:"monster",clr:"Brown / น้ำตาล",cl:"Monster, Beast, Creature, Dragon",bk:[
+  {t:"Behavioral Patterns of Monsters",v:10},
+  {t:"Ecological Pyramid of Monsters",v:10},
+  {t:"A Field Guide to Monsters: Identification and Survival",v:10},
+  {t:"The Illustrated Bestiary: Creatures of Land, Sky, and Sea",v:10},
+  {t:"Living with Monsters: A Guide to Care and Training",v:10},
+  {t:"Magical Creatures and Their Spells",v:10},
+  {t:"Monster Field Notes: A Beastmaster's Journey",v:10},
+  {t:"Monsterology: An Introduction to Forbidden Beast",v:10},
+  {t:"Monsterology: Language and Vocal Patterns of Monsters",v:10},
+  {t:"A Pictorial Guide to the Ecology of Monsters",v:10},
+  {t:"Tears of the Beasts: Records of the Extinct and Forgotten",v:10},
+  {t:"The World Encyclopedia of Dragons",v:10},
+]},
+{s:"1B",n:"Astrology and Divination",f:1,tm:"astro",clr:"Blue / น้ำเงิน",cl:"Prophecy, Oracle, Seer, Zodiac, Tarot",bk:[
+  {t:"The Abyss of Tarot: A Book of Symbols and Intuition",v:10},
+  {t:"Animal Oracles: Prophesying Match Results",v:10},
+  {t:"Apocalypse of the Heavens: Omens and Warnings",v:10},
+  {t:"The Art of Feng Shui: Reading Dragon Veins and Increasing Luck",v:10},
+  {t:"Book of Constellations: The Thirteen Zodiac Signs That Guide Destiny",v:10},
+  {t:"The Crystal Tome: Practical Scrying and Clairvoyance",v:10},
+  {t:"One Right Guess in a Hundred Makes a Seer",v:10},
+  {t:"Prophecy: Angelic Self-Writing",v:10},
+  {t:"Prophecy by the Three Witches",v:10},
+  {t:"Prophecy of the Advent of the Great King of Terror",v:10},
+  {t:"The Seer's Journal: Daily Visions of the Future",v:10},
+  {t:"Voices of the Oracle: Revelations for the Chosen Listener",v:10},
+]},
+{s:"1C",n:"Curses and Dispels",f:1,tm:"curse",clr:"Black & Red / ดำ-แดง",cl:"Curse, Hex, Dispel, Malediction, Dark Pact",bk:[
+  {t:"The Countercurse Compendium: Magic That Bites Back",v:10},
+  {t:"Seal and Sever: Lost Rites of Curse-Breaking",v:10},
+  {t:"The Dark Pact: The Birth of a Curse",v:10},
+  {t:"The Grand Compendium of Curses: 100 Hexes and 100 Dispells",v:10},
+  {t:"Advanced Curse Analysis: Multiple Structures and Dissolution Process",v:3},
+  {t:"The Book of Curses: Forgotten Plagues and Their Dispells",v:3},
+  {t:"Breaking the Curse of the Trophyless",v:3},
+  {t:"Curse-Breaking Arithmancy and Sealing Arts",v:3},
+  {t:"The Death's Note",v:3},
+  {t:"Introduction to Malediction Systems: Taxonomy, Structure, and Mechanisms",v:3},
+  {t:"The Lexicon of Curses: Malefic Words and Their Power",v:3},
+  {t:"Reverse Ritual Tracing for Curse Sourcing Identification",v:3},
+]},
+{s:"1D",n:"Bard and Music",f:1,tm:"bard",clr:"Green/Brown / เขียว-น้ำตาล",cl:"Bard, Music, Chant, Song, Sonata, Hymnal",bk:[
+  {t:"A Collection of Chanted Verses: Status Buffing and Nerfing",v:10},
+  {t:"The Chronicle of World Music of Magic",v:10},
+  {t:"The Dark Sonata: Music That Attracts Calamity",v:10},
+  {t:"Spell Chanting Technique: The Blending of Sound and Spell",v:10},
+  {t:"The Bard's Book of Spells",v:3},
+  {t:"Chanting Methods of Resonating with Natural Entities",v:3},
+  {t:"Magical Psalms: Methodology for Compiling Chanted Poetry",v:3},
+  {t:"Musical Saint: A Great Figure Who Brought Music to the Masses",v:3},
+  {t:"Theoretical Foundations of Enchanted Music",v:3},
+  {t:"Theory of Chanting: Principles of Mana Amplification via Voice",v:3},
+  {t:"Transcendental Magic Etudes of Execution",v:3},
+  {t:"Witches' Hymnal",v:3},
+]},
+{s:"1E",n:"Necromancy",f:1,tm:"necro",clr:"Black & Purple / ดำ-ม่วง",cl:"Necromancy, Dead, Ghost, Zombie, Demon, Soul",bk:[
+  {t:"Compendium of Necromancy: The Arts of Management and Maintenance",v:10},
+  {t:"Compendium of Necromancy: The Beginner's Guide",v:10},
+  {t:"Foundations of Necromancy: On the Fixation and Severance of Souls",v:10},
+  {t:"How to Command the Army of the Dead",v:10},
+  {t:"Necrodefense Compendium: Dealing with Hauntings",v:10},
+  {t:"Night Parade of One Hundred Demons",v:10},
+  {t:"Practical Necromancy: Skeleton Edition",v:10},
+  {t:"Ritual Design Guidelines for the Practicing Necromancer",v:10},
+  {t:"Rituals of Calling and Commanding the Dead",v:10},
+  {t:"A Technique to Turn Wandering Ghosts into Servants",v:10},
+  {t:"Theory of the Nether Strata: Analysis of the Afterworld",v:10},
+  {t:"Zombie: The Secret Rituals for Domination",v:10},
+]},
+{s:"1F",n:"Transfiguration",f:1,tm:"transf",clr:"Dark Red/Brown / แดง-น้ำตาล",cl:"Transfiguration, Transformation, Metamorphosis",bk:[
+  {t:"Beastification and the Threshold of Madness",v:10},
+  {t:"The Codex of Transfiguration: Detection and Nullification",v:10},
+  {t:"Complete Practical Transfiguration: Phases and Sustaining Techniques",v:10},
+  {t:"Correlation of Transformation Duration and Mana Depletion",v:10},
+  {t:"Foundations of Transformation: Object Alteration and Reassembly",v:10},
+  {t:"Humanization: A Transformation Guide for Non-Humans",v:10},
+  {t:"Introduction to Inanimate Transfiguration",v:10},
+  {t:"Introduction to the Theory of Transfiguration",v:10},
+  {t:"Magical Physiology of Therianthropy",v:10},
+  {t:"Mastery of Mimicry: Theory and Practice of Visual Imitation",v:10},
+  {t:"Preservation of Mental Identity in Therianthropic Spells",v:10},
+  {t:"Reducing Metamorphosis Time: How to Minimize Vulnerability",v:10},
+]},
+{s:"1G",n:"Magical Artifacts and Enchanting",f:1,tm:"artifact",clr:"Light Purple / ม่วงอ่อน",cl:"Artifact, Enchant, Relic, Forging, Crystal",bk:[
+  {t:"Foundations of Magical Item Crafting and Materials",v:10},
+  {t:"The Grand Encyclopedia of Magical Artifacts",v:10},
+  {t:"Magical Item's Workshop Series",v:10},
+  {t:"Practical Enchantment: Offense and Defense Enhancement",v:10},
+  {t:"Artifacts That Change The World",v:3},
+  {t:"Compendium of Forbidden Relics",v:3},
+  {t:"Crystal Catalog: Elemental Properties and Enchantment Mastery",v:3},
+  {t:"Forging Magical Items",v:3},
+  {t:"Introduction to Enchantment Theory",v:3},
+  {t:"The Inverse Law of High Grade Armor and Fabric Coverage",v:3},
+  {t:"The Magic Ring That Steals Reason",v:3},
+  {t:"Repair and Retuning of Enchanted Gear",v:3},
+]},
+{s:"1H",n:"Stealth",f:1,tm:"stealth",clr:"Black / ดำ",cl:"Stealth, Shadow, Ninja, Invisible, Hide",bk:[
+  {t:"Codex of the Stealth Arts",v:10},
+  {t:"Complete Guide to Stealth Magic",v:10},
+  {t:"Hide vs Seek: Magical Warfare of Stealth and Detection",v:10},
+  {t:"Stealth Techniques: Concealment Among Nearby Objects",v:10},
+  {t:"The Art of Hiding One's Presence",v:3},
+  {t:"The Art of Shadow Walking",v:3},
+  {t:"The Book of Ninja: Lurking in the Darkness",v:3},
+  {t:"Foundations and Applications of Invisibility Magic",v:3},
+  {t:"Introduction to Stealth Magic: The Art of Shadowing",v:3},
+  {t:"Shadowmages: Shadow Cloning and Teleportation",v:3},
+  {t:"Stealth Arts: Techniques to Becoming Air",v:3},
+  {t:"Tactics of the Bucket: Vision-Sealing Theft",v:3},
+]},
+{s:"1I",n:"Illusion Magic",f:1,tm:"illusion",clr:"Purple / ม่วง",cl:"Illusion, Hypnosis, Perception, Imaginary",bk:[
+  {t:"The Art of Illusion Defense: Mental Defences and Protection of the Five Senses",v:10},
+  {t:"Chronostatic Illusions: Manipulating the Perception of Time",v:10},
+  {t:"Crafting Visual and Auditory Illusions",v:10},
+  {t:"Enchanting Illusions: Seduction Magic",v:10},
+  {t:"The Grand Compendium of Illusion Magic",v:10},
+  {t:"Illusion Magic: The Art of Hypnosis",v:10},
+  {t:"The Illusory Art: Sovereignty over the Five Senses",v:10},
+  {t:"The Infinite Hall: Creating Inescapable Illusory Spaces",v:10},
+  {t:"Introduction to Illusion Magic: Truths of the Imaginary",v:10},
+  {t:"Terror Illusions: Spells to Shatter the Enemy's Mind",v:10},
+  {t:"The Ultimate Illusion: Mirror Flower, Water Moon",v:10},
+  {t:"Where Illusion Ends and Reality Begins",v:10},
+]},
+{s:"1J",n:"Summoning Magic",f:1,tm:"summon",clr:"Dark Blue / น้ำเงินเข้ม",cl:"Summon, Contract, Grimoire, Summoning",bk:[
+  {t:"A Beginner's Guide: Summoning the Useless Goddess",v:10},
+  {t:"The Book of Summoning and Contracts",v:10},
+  {t:"The Complete Summoning Grimoire",v:10},
+  {t:"Divine Dragon Summoning: Descent of Bahamut",v:10},
+  {t:"Encyclopedia of 10,000 Summons: The Complete Collection from Heaven to the Abyss",v:10},
+  {t:"Introduction to Summoning: Fundamentals of Otherworldly Contracts",v:10},
+  {t:"Magic Circles and Summoning Syntax Explained",v:10},
+  {t:"Succubus Summoning Techniques and Practical Applications",v:10},
+  {t:"Summoning and Controlling Catastrophic Entities",v:10},
+  {t:"Summoning Magic for Beginners",v:10},
+  {t:"Theory and Practice of Hero Summoning from Another World",v:10},
+  {t:"Trans-Temporal Summons and the Law of Causality",v:10},
+]},
+{s:"1K",n:"Healer and Healing Magic",f:1,tm:"heal",clr:"White & Red / ขาว-แดง",cl:"Heal, Healing, Cure, Healer, Recovery",bk:[
+  {t:"Advanced Healing Theory: Maintaining Vigor Until Daybreak",v:10},
+  {t:"The Four Principles of the Healer's Ethics",v:10},
+  {t:"Fundamentals of Healing and Mana Control",v:10},
+  {t:"The Grand Compendium of Healing Magic",v:10},
+  {t:"Healing Magic for the Reclamation of Mind and Consciousness",v:10},
+  {t:"Introduction to Magical Healing",v:10},
+  {t:"No More \"Healer Diff\": A Comprehensive Guide",v:10},
+  {t:"Spells for Curing Poisons and Diseases",v:10},
+]},
+{s:"1L",n:"Holy Magic",f:1,tm:"holy",clr:"White & Gold / ขาว-ทอง",cl:"Holy, Sacred, Purification, Undead, Divine",bk:[
+  {t:"Compendium of Sacred Purification Magic",v:10},
+  {t:"Formation and Maintenance of Large Sacred Barriers",v:10},
+  {t:"Fundamentals of Holy Power in Undead Annihilation",v:10},
+  {t:"Holy Magic: Undead Protection and Purification",v:10},
+  {t:"Prolegomena to Holy Magic Theory",v:10},
+  {t:"Selection and Application of Targets for Holy Magic",v:10},
+  {t:"Spells of Holy Light for Concealing Vital Areas",v:10},
+  {t:"Theological Research on Holy Magic",v:10},
+]},
+{s:"1M",n:"Destruction Magic",f:1,tm:"destruct",clr:"Misc (Gem on Spine) / มีอัญมณีที่สัน",cl:"Book of Spells: [Element] — ระบุธาตุ + ระดับ",bk:[
+  {t:"Book of Spells: Dimension Rift - Expert -",v:10},
+  {t:"Book of Spells: Earth - Novice -",v:10},
+  {t:"Book of Spells: Fire - Novice -",v:10},
+  {t:"Book of Spells: Fluid - Expert -",v:10},
+  {t:"Book of Spells: Forest Creation - Expert -",v:10},
+  {t:"Book of Spells: Ice - Adept -",v:10},
+  {t:"Book of Spells: Light - Adept -",v:10},
+  {t:"Book of Spells: Pulverization - Expert -",v:10},
+  {t:"Book of Spells: Shadow - Adept -",v:10},
+  {t:"Book of Spells: Thunder - Adept -",v:10},
+  {t:"Book of Spells: Water - Novice -",v:10},
+  {t:"Book of Spells: Wind - Novice -",v:10},
+  {t:"Book of Spells: Abyss - Master -",v:5},
+  {t:"Book of Spells: Energy - Legendary -",v:5},
+  {t:"Book of Spells: Explosion - Legendary -",v:5},
+  {t:"Book of Spells: Gravitation - Master -",v:5},
+  {t:"Book of Spells: Matter Creation - Master -",v:5},
+  {t:"Book of Spells: Psychokinesis - Master -",v:5},
+  {t:"Book of Spells: Space - Legendary -",v:5},
+  {t:"Book of Spells: Time - Legendary -",v:5},
+]},
+{s:"1N",n:"Alchemy and Potion-Making",f:1,tm:"alchemy",clr:"Misc (Tree on Cover) / ต้นไม้บนปก",cl:"Alchemy, Potion, Herbology, Chimera, Philosopher",bk:[
+  {t:"The Alchemist's Encyclopedia: Categories and Efficacy of Ingredients",v:10},
+  {t:"The Alchemist's Field Guide: Natural Materials and Foraging",v:10},
+  {t:"Alchemy Codex: An Introduction to Herbology",v:10},
+  {t:"Books of Alchemy: A Practical Guide to Potion Crafting",v:10},
+  {t:"Books of Alchemy: Encyclopedia of World Potions",v:10},
+  {t:"Books of Alchemy: Homunculus - Chronicle of the Forbidden Creation",v:10},
+  {t:"Books of Alchemy: The Laws and Taboos of Chimera Synthesis",v:10},
+  {t:"Books of Alchemy: The Little Herbology of the Faefolk",v:10},
+  {t:"Books of Alchemy: Potion Safety and Storage Manual",v:10},
+  {t:"Books of Alchemy: Practical Extraction of High-Purity Essences",v:10},
+  {t:"Books of Alchemy: The Ultimate Secret of the Philosopher's Stone",v:10},
+  {t:"Forbidden Alchemy: The Guide to Toxin Brewing and Disposal",v:10},
+  {t:"Tomes of Alchemy: The Alchemical Art of Transmuting Food to Poop",v:5},
+  {t:"Tomes of Alchemy: Alchemical Safety Manual Handling Hazardous Materials",v:5},
+  {t:"Tomes of Alchemy: Alchemical Tools and Laboratory Apparatus",v:5},
+  {t:"Tomes of Alchemy: Beginner Manual of Alchemical Synthesis",v:5},
+  {t:"Tomes of Alchemy: A Beginner's Guide to Modern Synthesis",v:5},
+  {t:"Tomes of Alchemy: Complete Theory of Elemental Transmutation",v:5},
+  {t:"Tomes of Alchemy: The Great Compendium of Synthesis Recipes",v:5},
+  {t:"Tomes of Alchemy: A Grimoire of Elemental Fusion and Fission",v:5},
+]},
+// Floor 2
+{s:"2A",n:"Warrior",f:2,tm:"warrior",clr:"Brown / น้ำตาล",cl:"Warrior, Blade, Sword, Axe, Battle, Creed",bk:[
+  {t:"Armor and Muscle: Synergy Between Body and Steel",v:10},
+  {t:"Battlefield Logic: A Tactical Guide for Warriors",v:10},
+  {t:"Blade: Dimension Slash Combat Technique",v:10},
+  {t:"The Dark Berserker and the Greatsword",v:10},
+  {t:"Heretic Blade Arts: Three Sword Style",v:10},
+  {t:"Mind Like Still Water: The Zen of Perfect Parrying",v:10},
+  {t:"Scion of the Axe God: Strongest Warrior Chosen by the Sun",v:10},
+  {t:"The Supreme Creed: The Naked Warrior",v:10},
+  {t:"Sword Saint: The One Who Sliced the Mountains",v:10},
+  {t:"The Warrior's Creed: Only Cowards Become Long-Range Mages",v:10},
+  {t:"Warrior's Foundation: Between Blade and Spell",v:10},
+  {t:"The Weapon Compendium: Use of Swords, Axes and Spears",v:10},
+]},
+{s:"2B",n:"Archery",f:2,tm:"archery",clr:"Green / เขียว",cl:"Archery, Bow, Arrow, Archer, Quiver",bk:[
+  {t:"Anatomy of the Bow and Arrow",v:10},
+  {t:"Applied Archery Tactics: Arrows of Stillness and Motion",v:10},
+  {t:"Archers of the Fairies Pact",v:10},
+  {t:"Arrow of the Shattered Knee",v:10},
+  {t:"The Art of the Arrow Series",v:10},
+  {t:"The Book of Arcane Bows: Magic Infused Arrows",v:10},
+  {t:"Forging and Using Magical Bows",v:10},
+  {t:"From Longbow to Shortbow: Tactical Applications",v:10},
+  {t:"The Fundamentals of Archery: Spirit and Skill",v:10},
+  {t:"The Grand Compendium of Archery",v:10},
+  {t:"The Hunter's Archery Manual",v:10},
+  {t:"Stellar Archery: Resonance of Stars and Arrows",v:10},
+]},
+{s:"2C",n:"Daily Magic",f:2,tm:"daily",clr:"Pastel / สีพาสเทล",cl:"Everyday, Daily, Home, Kitchen, Lazy, Commute",bk:[
+  {t:"1000 Easy Spells to Use at Home",v:10},
+  {t:"A Compendium of Useless Magic from Around the World",v:10},
+  {t:"The Complete Guide to Everyday Magic: Simple Life Enchantments",v:10},
+  {t:"Introduction to LifeHack Magic",v:10},
+  {t:"Magic Techniques to Boost Household Efficiency",v:10},
+  {t:"Minor Repairs: Practical Everyday Magic",v:10},
+  {t:"Broom Handling Techniques: The Art of Aerial Travel",v:3},
+  {t:"Compendium Magic for the Lazy",v:3},
+  {t:"Everyday Magic for Deep and Restful Sleep",v:3},
+  {t:"Handy Kitchen Magic Recipes",v:3},
+  {t:"Home Magic: Spells to Protect and Nurture Your Dwelling",v:3},
+  {t:"How to Commute with Magic",v:3},
+  {t:"Magic to Mute a Specific Person's Voice",v:3},
+  {t:"Magic to Speak and Convey",v:3},
+  {t:"Spoiler Prevention Magic",v:3},
+  {t:"Storage Magic: Different Dimension Pocket",v:3},
+  {t:"Three Seconds to Office: Magic for Last-Minute Commuters",v:3},
+  {t:"What Kind of Magic Works Best for Job Hunting?",v:3},
+]},
+{s:"2D",n:"Mathematics",f:2,tm:"math",clr:"Misc (Crest on Spine) / ตราบนสัน",cl:"Math, Equation, Geometry, Theory, Vector",bk:[
+  {t:"Easy Math! Magical Representation Theory for a 3-Year Old",v:10},
+  {t:"Introduction to Sorcery Mathematics",v:10},
+  {t:"Mana Measurement and Conversion Equations",v:10},
+  {t:"The Mathematical Geometry of Magic Circles",v:10},
+  {t:"Structural Analysis of Sorcerous Equations",v:10},
+  {t:"Theory of Everything: Grasping Beautiful Theory through Equations",v:10},
+  {t:"Arcane Glyphs and Pattern Theory",v:3},
+  {t:"Genesis Theory: An Interpretation via Imaginary Numbers",v:3},
+  {t:"The Law of Equivalent Exchange",v:3},
+  {t:"Magical Analysis Based on the Application of Infinite Series",v:3},
+  {t:"Mass-Mana Equivalence",v:3},
+  {t:"Mathematical Methods for Constructing Magic Circles",v:3},
+  {t:"Prime Equation: The Absolute Order Hidden Behind Irregularity",v:3},
+  {t:"Prophecy and Probability Theory",v:3},
+  {t:"Quantification of Cursed Power and Constraint Conditions",v:3},
+  {t:"Spatial Distribution of Mana Density and Its Fluctuation Characteristics",v:3},
+  {t:"Temporal Magic and Chaos Theory",v:3},
+  {t:"Vector Space Theory of Magic",v:3},
+]},
+{s:"2E",n:"Art",f:2,tm:"art",clr:"Misc / หลากสี",cl:"Art, Drawing, Painting, Puppet, Sculpture",bk:[
+  {t:"Art and Magic Circles: Definitions and Differences",v:10},
+  {t:"Art Collection That No One Can Understand",v:10},
+  {t:"Art is Sublime Because It Has No Answer",v:10},
+  {t:"Drawing Moving Characters: Beginner Level",v:10},
+  {t:"How to Change Drawn Art into Reality",v:10},
+  {t:"Introduction to Magical Art",v:10},
+  {t:"Living Paintings: Creating and Controlling Animated Magical Art",v:10},
+  {t:"Memory Transfer: The Technique of Direct Scene Depiction from your Brain",v:10},
+  {t:"Perfect Lines and Circles: The Secret to Drawing in One Stroke",v:10},
+  {t:"Process: Sublimating Brain Fragments into Works",v:10},
+  {t:"Puppet Crafting: An Introductory Guide to Automata and Statues",v:10},
+  {t:"Techniques for Returning a Drawing to a Previous Step",v:10},
+]},
+{s:"2F",n:"Management",f:2,tm:"manage",clr:"Dark Blue / น้ำเงินเข้ม",cl:"Management, Guild, Licensing, Tactical, Administration",bk:[
+  {t:"Conflict Protocols for Guilds",v:10},
+  {t:"Guild Treasury and Reward System Management",v:10},
+  {t:"Licensing and Regulation of Magic Users",v:10},
+  {t:"Magical Supply Chain Management",v:10},
+  {t:"Management: Administration of Magical Institutions",v:10},
+  {t:"Management: High-Ranking Magician Training and Evaluation System",v:10},
+  {t:"Management: Mana Resource Allocation and Optimization",v:10},
+  {t:"Management: Tactical Command of Magical Forces",v:10},
+  {t:"Managing Diverse and Cross-Race Adventurer Parties",v:10},
+  {t:"Organizational Discipline: How Small Cracks Lead to Great Ruin",v:10},
+  {t:"Research of Adventurer Party Tactics Series",v:10},
+  {t:"Systems for Nurturing and Promotions in Guilds",v:10},
+]},
+{s:"2G",n:"Economics",f:2,tm:"econ",clr:"Green / เขียว",cl:"Economics, Trade, Market, Finance, Tax",bk:[
+  {t:"Arcane Economy Report: Regional Mana Market Analysis",v:10},
+  {t:"Economics: Wage Structures in the Magical Professions",v:10},
+  {t:"Introduction to Arcane Market Systems",v:10},
+  {t:"Magic and Value: Arcane Resource Valuations",v:10},
+  {t:"Mana Currency Systems and Their Evolution",v:10},
+  {t:"An Introduction to Magical Economics",v:10},
+  {t:"Alchemy and Inflation: The Gold Collapse",v:3},
+  {t:"The Arcane Black Market and Price Manipulation",v:3},
+  {t:"The Complete Works of Magical Economics",v:3},
+  {t:"Economics: The Revolution in Logistics Through Teleportation",v:3},
+  {t:"Economics: Supply and Trade of Arcane Resources",v:3},
+  {t:"Economics: The Lost Three Decades",v:3},
+  {t:"Economics: Where Did the Taxes Go?",v:3},
+  {t:"Financial: The Art of the Tariff",v:3},
+  {t:"History of Demonic Financial Hegemony",v:3},
+  {t:"Spell Patents and IP Rights",v:3},
+  {t:"Studies in Arcane Fiscal Theory",v:3},
+  {t:"Why Do Stocks Crash the Moment I Buy Them?",v:3},
+]},
+{s:"2H",n:"Sociology",f:2,tm:"socio",clr:"Dark Pink/Orange / ชมพูเข้ม-ส้ม",cl:"Labor, Society, Wage, Career, Culture, Race",bk:[
+  {t:"Career Opportunity: Graduated from Magic University… Got Zero Job Offers",v:10},
+  {t:"The Influence of Short-Lived Cultures on Long-Lived Species",v:10},
+  {t:"Interracial Social Dynamics",v:10},
+  {t:"Job Inequality: Low Salary even as a Licensed Sage",v:10},
+  {t:"Labor Studies: Even with Magic, Overtime Never Ends",v:10},
+  {t:"Work Culture: The Mage Who Changed Jobs to a Sweatshop",v:10},
+  {t:"\"Low Mana\" a Form of Discrimination?",v:3},
+  {t:"A Media Society Manipulated by Magic",v:3},
+  {t:"How to Survive a Mana-Disparity Society",v:3},
+  {t:"The Labor Reality of Mages: Unpaid and Unprotected Interns",v:3},
+  {t:"Labor Studies: Where are the Workplaces to Apply Your University-Learned Magic?",v:3},
+  {t:"Mana and Labor: Sociology of Magical Economies",v:3},
+  {t:"Marriage Is a Contract Spell: Advanced Disenchantment is required for Divorce",v:3},
+  {t:"The Rift in Values Between Different Species with Differing Lifespans",v:3},
+  {t:"Social Structures of Magical Civilizations",v:3},
+  {t:"Sociology: Mage Pension System on the Brink of Collapse",v:3},
+  {t:"The Structure of Power Monopolization Tendencies by Long-Lived Species",v:3},
+  {t:"Wage Gaps: Universal Mana Income for Mages Now!",v:3},
+]},
+{s:"2I",n:"Psychology",f:2,tm:"psych",clr:"Dark Red / แดงเข้ม",cl:"Psychology, Mind, Mental, Behavior, Confidence",bk:[
+  {t:"A Diary of the Change in the State of The Mind-Reading Girl",v:10},
+  {t:"A Psychologist's Definition of \"Happiness\": The Cutting Edge of Happiness Research",v:10},
+  {t:"The Correlation of Magic and Emotion",v:10},
+  {t:"Effort Builds Confidence, and Confidence Leads to Action",v:10},
+  {t:"Introduction to Psychological Principles and Analysis",v:10},
+  {t:"Mind Reading: Detecting Lies through Facial Expressions and Gestures",v:10},
+  {t:"The Psychology: Powerlessness and Responsibility Shifting",v:10},
+  {t:"The Psychology of Backseat Gaming",v:10},
+  {t:"Psychology: Mentality That the Weak Bark the Most",v:10},
+  {t:"The Psychology of Prioritizing Gaming Over Tidying Your Room",v:10},
+  {t:"The Psychology of Using Strong Language from a Safe Zone",v:10},
+  {t:"Ultimate Choice: Curry flavoured Poop, or Poop flavoured Curry?",v:10},
+]},
+{s:"2J",n:"Philosophy",f:2,tm:"philo",clr:"White / ขาว",cl:"Philosophy, Ethics, Metaphysics, Soul, Existence",bk:[
+  {t:"Ethics of Magic: Responsibility and Restraint",v:10},
+  {t:"Fantasy or Reality? The Ontological Problem of World",v:10},
+  {t:"Foundations of Metaphysics",v:10},
+  {t:"I think, therefore I am",v:10},
+  {t:"Introduction to Magical Determinism: Spell-Causality and the Philosophy",v:10},
+  {t:"Philosophical Studies in Magic",v:10},
+  {t:"Philosophy of Mana and Willpower",v:10},
+  {t:"Philosophy of Science: Methodology and Truth",v:10},
+  {t:"Philosophy of Self and Other",v:10},
+  {t:"Philosophy: Power and Ethics",v:10},
+  {t:"Soul, Mind, and Body: Are They Truly Distinct?",v:10},
+  {t:"Teachings of the Great Philosophers of Magic",v:10},
+]},
+{s:"2K",n:"Jurisprudence",f:2,tm:"law",clr:"Dark Green/Blue / เขียว-น้ำเงินเข้ม",cl:"Law, Legal, Court, Rights, Contract, Regulation",bk:[
+  {t:"The Chronicles of the Magical Court",v:10},
+  {t:"Codex of Truth Verification",v:10},
+  {t:"The Constitution of the Kingdom",v:10},
+  {t:"Grand Compendium of Magic Jurisprudence",v:10},
+  {t:"Law: Foundations of Contemporary Magical Jurisprudence",v:10},
+  {t:"The System and Precedents of the Arcane Court",v:10},
+  {t:"Civil Liability Within Adventuring Parties",v:3},
+  {t:"Comparative Study of National Magic Laws",v:3},
+  {t:"Compendium of Magical Civil Law: Definition of Personhood, Rights and Succession",v:3},
+  {t:"Contract Law: How to Write Adventurer Contracts",v:3},
+  {t:"Guild Charter: Guild Discipline and Expulsion Systems",v:3},
+  {t:"The Idea of Equality Under the Law Is Laughable",v:3},
+  {t:"Legal System for Magical Accidents and Accountability",v:3},
+  {t:"Legal Treatment of Forbidden Magic",v:3},
+  {t:"Legality and Regulation of Magic Use",v:3},
+  {t:"The Legalities of Party Disbandment: Property Distribution and Liability",v:3},
+  {t:"Magical Detective Law: Punishment Act for the Use of Unapproved and Unregistered Spell",v:3},
+  {t:"Monster Hunting Law: List of Prohibited Species and Regulation of Attack Methods",v:3},
+]},
+{s:"2L",n:"Romance Novels",f:2,tm:"romance",clr:"Pink/Purple / ชมพู-ม่วง",cl:"Romance Novel, Love, Kiss, Heart, Pact",bk:[
+  {t:"A Kiss Wrought in Spells",v:10},
+  {t:"A Midsummer Night's Sweet Dream",v:10},
+  {t:"Romance Novel: A Pact Beneath the Stars",v:10},
+  {t:"Romance Novel: The Fire King and the Ice Queen",v:10},
+  {t:"Romance Novel: Senior and the Beast",v:10},
+  {t:"Romance Novel: Whispers of the Moon",v:10},
+  {t:"30 year old Wizard's First Love",v:3},
+  {t:"Cursed to Love You",v:3},
+  {t:"Fill The Solitude of My Millennium with Your Ninety Years",v:3},
+  {t:"Romance Novel: The Chicken and The Cat",v:3},
+  {t:"Romance Novel: Lies More Beautiful Than Truth",v:3},
+  {t:"Romance Novel: My Massive Golden Balls",v:3},
+  {t:"Romance Novel: The Red Lady and the Bamboozled Man",v:3},
+  {t:"Romance Novel: The Thorn Prince",v:3},
+  {t:"Roses Are Red, Violets Are Blue",v:3},
+  {t:"The Strongest Archmage is Obsessed with Me, the Girl with Zero Magic!",v:3},
+  {t:"True Love between A 20-Year-Old Lady and an 80-Year-Old Tycoon",v:3},
+  {t:"The Witch and the Accidental Love Potion",v:3},
+]},
+{s:"2M",n:"Mystery Novels",f:2,tm:"mystery",clr:"Dark / เข้ม",cl:"Mystery Fiction, Detective, Reaper, Code",bk:[
+  {t:"The Arcane Detective Files",v:10},
+  {t:"Detective the Reaper",v:10},
+  {t:"Mystery Fiction: The Bloodstained Astrologer",v:10},
+  {t:"Mystery Fiction: The Prospero Code",v:10},
+  {t:"Mystery Fiction: Judgment of the Spectral Tribunal",v:5},
+  {t:"Mystery Fiction: Magical Theorist Maris",v:5},
+  {t:"Mystery Fiction: One Who Looks into the Abyss",v:5},
+  {t:"Mystery Fiction: The Pirate Captain Who Stepped Down from His Ship",v:5},
+]},
+{s:"2N",n:"History",f:2,tm:"history",clr:"Dark Red/Purple / แดง-ม่วง",cl:"History, Origins, Civilization, Records",bk:[
+  {t:"The Genesis of Magic and the Evolution of Civilization",v:10},
+  {t:"Origins of Magic: Awakening of the First Spells and Magic Power",v:10},
+  {t:"Studies in the History of Magical Civilizations",v:10},
+  {t:"The Transition and Evolutionary History of Magic",v:10},
+  {t:"Ancient Manuscript Studies on Mage Birth",v:5},
+  {t:"The History of World Exploration and the Discovery of Lost Continents",v:5},
+  {t:"History and Tactics of Magical Warfare",v:5},
+  {t:"Record of the Demon King's Subjugation: The Archmage's Conquest",v:5},
+]},
+{s:"2O",n:"The Travels of Otherworld",f:2,tm:"travel",clr:"Misc / หลากสี",cl:"Otherworld, Wi-Fi, Internet, C++, Corporate",bk:[
+  {t:"A People Enchanted by Glowing Slabs",v:10},
+  {t:"The Cursed Workplaces of a Magicless World",v:10},
+  {t:"The Curious Daily Life in a World Without Magic",v:10},
+  {t:"They Call Their Mana \"Dark Energy\"",v:10},
+  {t:"In the Otherworld, Money is the Ultimate Magic",v:5},
+  {t:"The \"Internet\": The All-Knowing Grimoire",v:5},
+  {t:"Otherworld Chronicles: A World Ruled by Data",v:5},
+  {t:"The Otherworld: Demanding Fresh Graduates with 10 Years of Experience",v:5},
+  {t:"Strange Technology from Another World! The Ultimate Language: C++",v:5},
+  {t:"The Ultimate Guide to Otherworldly Swear Words",v:5},
+  {t:"They Worship an Invisible Entity Known as Wi-Fi",v:5},
+  {t:"A World Without a Demon Lord, Yet Full of Corporate Slaves",v:5},
+]},
+{s:"2P",n:"Dungeons",f:2,tm:"dungeon",clr:"Light Purple/Pink / ม่วงอ่อน-ชมพู",cl:"Dungeon, Bestiary, Gourmet, Tactics, Architecture",bk:[
+  {t:"Bestiary Components: Dungeon Creatures",v:10},
+  {t:"Compendium of Dungeon Resources",v:10},
+  {t:"Dungeon of the Abyss",v:10},
+  {t:"Fundamentals of Dungeon Architecture",v:10},
+  {t:"The Daily Dungeon Notes of the Party Chronicler",v:5},
+  {t:"Gourmet Expeditions in the Dungeon",v:5},
+  {t:"Optimization Theory of Dungeon Routes",v:5},
+  {t:"Practical Dungeon Tactics",v:5},
+]},
+{s:"2Q",n:"Language",f:2,tm:"lang",clr:"Dark Red & Green / แดงเข้ม-เขียว",cl:"Language, Elvish, Draconic, Demonic, Dwarvish",bk:[
+  {t:"Everyone's Demonic: Words of Covenant and Power",v:10},
+  {t:"Everyone's Dwarvish: The Craftsman's Language",v:10},
+  {t:"Everyone's Elvish: The Graceful Speech of the Forest",v:10},
+  {t:"Everyone's Fairy Tongue: Tiny and Lovely Words",v:10},
+  {t:"How Did the First Language Emerge? The Origins of Language Evolution",v:5},
+  {t:"Inter-Species Communication",v:5},
+  {t:"The Birth of Magical Languages: Secrets of Spells and Ancient Speech",v:5},
+  {t:"The Language of Draconic: Roars of Ancient Wisdom and Primal Power",v:5},
+]},
+];
+
+// Total count
+const TOTAL=D.reduce((a,c)=>a+c.bk.length,0);
+document.getElementById('sn').textContent=TOTAL;
+
+// Populate category dropdown
+const cf=document.getElementById('cf');
+D.forEach(c=>{
+  const o=document.createElement('option');
+  o.value=c.s;o.textContent=`${c.s} — ${c.n}`;
+  cf.appendChild(o);
+});
+
+let CS={};
+
+function hl(t,q){
+  if(!q)return t;
+  const e=q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  return t.replace(new RegExp(e,'gi'),m=>`<mark>${m}</mark>`);
+}
+
+function go(){
+  const q=document.getElementById('q').value.trim().toLowerCase();
+  const fl=document.getElementById('fl').value;
+  const catF=document.getElementById('cf').value;
+  const sf=document.getElementById('sf').value;
+  let cats=D.filter(c=>{
+    if(fl!=='all'&&c.f!==parseInt(fl))return false;
+    if(catF!=='all'&&c.s!==catF)return false;
+    return true;
+  });
+  if(sf==='az')cats=[...cats].sort((a,b)=>a.n.localeCompare(b.n));
+  else if(sf==='cnt')cats=[...cats].sort((a,b)=>b.bk.length-a.bk.length);
+
+  const mc=document.getElementById('mc');
+  mc.innerHTML='';
+  let tot=0,tc=0;
+
+  if(sf==='sec'&&fl==='all'&&catF==='all'&&!q){
+    [1,2].forEach(fnum=>{
+      const fc=cats.filter(c=>c.f===fnum);
+      if(!fc.length)return;
+      const fd=document.createElement('div');
+      fd.className='floor-div';
+      fd.innerHTML=`<span class="floor-txt">ชั้น ${fnum} — ${fnum===1?'เวทย์มนต์ (Magic Spells)':'วิชาทั่วไป (General Studies)'}</span>`;
+      mc.appendChild(fd);
+      const g=document.createElement('div');g.className='book-grid';
+      fc.forEach(c=>{g.appendChild(mk(c,q));tot+=c.bk.length;tc++;});
+      mc.appendChild(g);
+    });
+  } else {
+    const g=document.createElement('div');g.className='book-grid';
+    cats.forEach(c=>{
+      const bks=q?c.bk.filter(b=>b.t.toLowerCase().includes(q)):c.bk;
+      if(!bks.length)return;
+      g.appendChild(mk(c,q,bks));tot+=bks.length;tc++;
+    });
+    if(!tc){
+      const em=document.createElement('div');em.className='empty';
+      em.textContent=`ไม่พบหนังสือที่ตรงกับ "${document.getElementById('q').value}"`;
+      g.appendChild(em);
+    }
+    mc.appendChild(g);
+  }
+
+  document.getElementById('ri').textContent=
+    q?`พบ ${tot} ชื่อ ใน ${tc} หมวด สำหรับ "${document.getElementById('q').value}"`
+     :`แสดง ${tc} หมวด — ${tot} ชื่อหนังสือ`;
+  document.getElementById('sn').textContent=tot;
+}
+
+function mk(c,q,filtBks){
+  const bks=filtBks||(q?c.bk.filter(b=>b.t.toLowerCase().includes(q)):c.bk);
+  const col=CS[c.s]&&!q;
+  const card=document.createElement('div');
+  card.className=`cat-card tm-${c.tm}${col?' collapsed':''}`;
+  const hdr=document.createElement('div');
+  hdr.className='cat-hdr';
+  hdr.onclick=()=>toggleC(c.s);
+  hdr.innerHTML=`<div class="cat-id">${c.s}</div>
+  <div class="cat-info">
+    <div class="cat-name">${c.n}</div>
+    <div class="cat-sub">🎨 ${c.clr} · ${c.cl}</div>
+  </div>
+  <div class="cat-meta">
+    <span class="cat-cnt">${bks.length} titles</span>
+    <span class="tog">▾</span>
+  </div>`;
+  const list=document.createElement('div');
+  list.className='book-list';
+  bks.forEach(b=>{
+    const r=document.createElement('div');
+    const vm=b.v===10?'v10':b.v===5?'v5':'v3';
+    r.className=`brow${q&&b.t.toLowerCase().includes(q)?' hl':''}`;
+    r.innerHTML=`<span class="btitle">${hl(b.t,q)}</span><span class="vtag ${vm}">${b.v}vol</span>`;
+    list.appendChild(r);
+  });
+  card.appendChild(hdr);card.appendChild(list);
+  return card;
+}
+
+function toggleC(s){CS[s]=!CS[s];go();}
+function expandAll(){CS={};document.getElementById('bex').classList.add('active');document.getElementById('bcl').classList.remove('active');go();}
+function collapseAll(){D.forEach(c=>CS[c.s]=true);document.getElementById('bcl').classList.add('active');document.getElementById('bex').classList.remove('active');go();}
+
+go();
+</script>
+</body>
+</html>
